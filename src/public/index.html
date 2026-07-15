@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>loshare - Local Quick Share</title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <!-- Offline / Connection Error Banner -->
+  <div id="connection-banner" class="banner hidden">
+    <div class="banner-content">
+      <span class="pulse-icon"></span>
+      <p id="banner-text">Connecting to local share server...</p>
+    </div>
+  </div>
+
+  <main class="app-container">
+    <header class="app-header">
+      <div class="logo-area">
+        <h1>loshare</h1>
+        <span class="badge">Local Share</span>
+      </div>
+      <p class="subtitle">Direct, high-speed file and link sharing over your local network</p>
+    </header>
+
+    <div class="main-grid">
+      <!-- Left Panel: My Identity -->
+      <section class="identity-card">
+        <h2>My Device</h2>
+        <div class="device-setup">
+          <div class="input-group">
+            <label for="my-name-input">Device Name</label>
+            <input type="text" id="my-name-input" maxlength="32" placeholder="Detecting name...">
+          </div>
+          <div class="device-meta">
+            <p><strong>Device Type:</strong> <span id="my-device-type">Detecting...</span></p>
+            <p><strong>Local IP:</strong> <span id="my-ip">Detecting...</span></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Discovered Peers -->
+      <section class="peers-card">
+        <h2>Active Peers</h2>
+        <div id="no-peers-placeholder" class="placeholder-state">
+          <div class="radar-animation">
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="ring"></div>
+          </div>
+          <p>Scanning local Wi-Fi for other devices...</p>
+          <span class="instructions">Open this page on another phone or PC connected to the same network.</span>
+        </div>
+        <div id="peers-grid" class="peers-grid hidden"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Share Modal Dialog -->
+  <div id="share-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-target-name">Share with Peer</h3>
+        <button id="close-modal-btn" class="close-btn">&times;</button>
+      </div>
+      
+      <div class="tabs-header">
+        <button id="tab-file-btn" class="tab-btn active">Send File</button>
+        <button id="tab-text-btn" class="tab-btn">Send Text</button>
+      </div>
+
+      <div class="tabs-content">
+        <!-- Send File Tab -->
+        <div id="tab-file" class="tab-pane">
+          <div id="dropzone" class="dropzone-area">
+            <input type="file" id="file-input" class="hidden-input">
+            <div class="dropzone-content">
+              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+              </svg>
+              <p>Drag & drop or <span class="highlight">browse</span></p>
+              <span class="file-limits">Maximum size: 100MB</span>
+            </div>
+            <div id="selected-file-details" class="selected-file hidden">
+              <p id="selected-file-name"></p>
+              <p id="selected-file-size"></p>
+            </div>
+          </div>
+          <button id="send-file-btn" class="btn primary" disabled>Send File</button>
+        </div>
+
+        <!-- Send Text Tab -->
+        <div id="tab-text" class="tab-pane hidden">
+          <textarea id="text-input" placeholder="Type or paste link/text here..."></textarea>
+          <button id="send-text-btn" class="btn primary">Send Text</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Incoming Transfer Modal -->
+  <div id="incoming-modal" class="modal-overlay hidden">
+    <div class="modal-card alert-card">
+      <h3>Incoming Share</h3>
+      <div class="incoming-info">
+        <p><strong id="incoming-sender">Device</strong> wants to share a file with you:</p>
+        <div class="file-preview">
+          <div class="file-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+            </svg>
+          </div>
+          <div class="file-meta">
+            <p id="incoming-file-name" class="filename"></p>
+            <p id="incoming-file-size" class="filesize"></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="decline-transfer-btn" class="btn secondary">Decline</button>
+        <button id="accept-transfer-btn" class="btn primary">Accept</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Transfer Modal -->
+  <div id="transfer-modal" class="modal-overlay hidden">
+    <div class="modal-card progress-card">
+      <h3 id="transfer-title">Transferring File</h3>
+      <p id="transfer-subtitle">Preparing stream...</p>
+      
+      <div class="progress-container">
+        <div class="progress-bar-bg">
+          <div id="transfer-progress-fill" class="progress-bar-fill"></div>
+        </div>
+        <div class="progress-labels">
+          <span id="transfer-percent">0%</span>
+          <span id="transfer-bytes">0 / 0 MB</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Text Receipt Modal -->
+  <div id="text-modal" class="modal-overlay hidden">
+    <div class="modal-card text-card">
+      <div class="modal-header">
+        <h3 id="text-sender-title">Received Link/Text</h3>
+        <button id="close-text-btn" class="close-btn">&times;</button>
+      </div>
+      <div class="text-display-box">
+        <pre id="text-display"></pre>
+      </div>
+      <button id="copy-text-btn" class="btn primary">Copy to Clipboard</button>
+    </div>
+  </div>
+
+  <script src="/public/app.js"></script>
+</body>
+</html>

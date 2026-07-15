@@ -1,0 +1,14 @@
+{
+  "name": "loshare",
+  "version": "1.0.0",
+  "description": "Local share web application",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "NODE_ENV=test node --test tests/unit/server.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
