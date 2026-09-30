@@ -7,7 +7,7 @@ import { Url } from 'url';
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(process.cwd(), 'src', 'public');
 const TEMP_DIR = path.join(process.cwd(), 'temp');
-const MAX_FILE_SIZE = 104857600; // 100 MiB in bytes
+const MAX_FILE_SIZE = 1024 * 1024 * 1024; // 1GB in bytes
 
 // Ensure temp/ directory exists and clean it on startup
 if (!fs.existsSync(TEMP_DIR)) {
@@ -238,7 +238,7 @@ const server = http.createServer((req, res) => {
 
         if (fileSize > MAX_FILE_SIZE) {
           res.writeHead(413, { 'Content-Type': 'application/json' });
-          return res.end(JSON.stringify({ error: 'File size exceeds 100MB limit' }));
+          return res.end(JSON.stringify({ error: 'File size exceeds 1GB limit' }));
         }
 
         const receiver = peers.get(receiverId);
@@ -326,7 +326,7 @@ const server = http.createServer((req, res) => {
       const contentLength = parseInt(req.headers['content-length'] || '0');
       if (contentLength > MAX_FILE_SIZE) {
         res.writeHead(413, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ error: 'Payload exceeds 100MB' }));
+        return res.end(JSON.stringify({ error: 'Payload exceeds 1GB' }));
       }
 
       const fileWriteStream = fs.createWriteStream(transfer.tempFilePath);

@@ -8,7 +8,7 @@ Designed with zero external npm dependencies, running entirely on the Node.js st
 
 ## Features
 - **Real-time Device Discovery**: Open the app on any device on your Wi-Fi network and see other devices instantly. No accounts, login, or internet required.
-- **Direct File Streaming**: Share files up to 100MB directly. Bytes are piped dynamically from the sender to the server and downloaded securely via client-side Blob assembly ONLY on the recipient device, preventing duplicate triggers and insecure browser warnings.
+- **Direct File Streaming**: Share files up to 1GB directly. Bytes are piped dynamically from the sender to the server and downloaded securely via client-side Blob assembly ONLY on the recipient device, preventing duplicate triggers and insecure browser warnings.
 - **Quick Text & Link Copying**: Share URLs or notes instantly. Clipboard copy fallbacks are supported on receiving devices.
 - **Ultra-Minimalist Light UI**: A clean, straightforward, and ultra-minimalist light-mode design utilizing minimal CSS with no borders, shadows, or colored logo gradients that fits perfectly on iOS Safari, Android Chrome, and Desktop browsers.
 - **Completely Offline**: Runs 100% inside your local network segment (perfect for secure or remote offline setups).

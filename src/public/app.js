@@ -382,8 +382,8 @@ fileInput.addEventListener('change', (e) => {
 });
 
 function handleFileSelection(file) {
-  if (file.size > 104857600) {
-    alert('File size exceeds the 100MB limit for local quick share.');
+  if (file.size > 1024 * 1024 * 1024) {
+    alert('File size exceeds the 1GB limit for local quick share.');
     resetFileSelection();
     return;
   }

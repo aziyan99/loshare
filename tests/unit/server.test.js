@@ -242,12 +242,12 @@ test('T012 / T015 / T016 / T017 - File Transfer Lifecycle', async () => {
   const transferId = initRes.body.transferId;
   assert.ok(transferId);
 
-  // 2. Size limit validation (>100MB)
+  // 2. Size limit validation (>1GB)
   const overSizeRes = await postJSON('/api/transfer/request', {
     senderId,
     receiverId,
     fileName: 'huge-movie.mp4',
-    fileSize: 104857601, // 100MB + 1 byte
+    fileSize: 1073741825, // 1GB + 1 byte
     fileType: 'video/mp4'
   });
   assert.strictEqual(overSizeRes.statusCode, 413);
